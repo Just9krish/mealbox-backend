@@ -1,23 +1,17 @@
-import mongoose from 'mongoose';
-import { Schema } from './index.js';
-const { Schema, Types } = mongoose;
+import { Schema, Types, model } from 'mongoose';
 
 const ProductVariantSchema = new Schema(
   {
     productId: { type: Types.ObjectId, ref: 'Product' },
-    label: String,
-    actualPrice: Number,
-    discountedPrice: Number,
-    unitType: String,
-    value: Number,
-    stock: Number,
+    label: { type: String, required: true },
+    actualPrice: { type: Number, required: true },
+    discountedPrice: { type: Number, required: true },
+    unitType: { type: String, required: true },
+    value: { type: Number, required: true },
+    stock: { type: Number, required: true },
   },
   { timestamps: true }
 );
 
-const ProductVariantModel = mongoose.model(
-  'ProductVariant',
-  ProductVariantSchema
-);
-
+const ProductVariantModel = model('ProductVariant', ProductVariantSchema);
 export default ProductVariantModel;

@@ -1,14 +1,11 @@
-import mongoose from 'mongoose';
-import { Schema } from './index.js';
-const { Schema, Types } = mongoose;
+import { Schema, Types, model } from 'mongoose';
 
 const CartSchema = new Schema(
   {
-    userId: { type: Types.ObjectId, ref: 'User', unique: true },
+    userId: { type: Types.ObjectId, ref: 'User', unique: true, required: true },
   },
   { timestamps: true }
 );
 
-const CartModel = mongoose.model('Cart', CartSchema);
-
+const CartModel = model('Cart', CartSchema);
 export default CartModel;

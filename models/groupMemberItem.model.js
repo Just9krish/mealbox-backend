@@ -1,23 +1,22 @@
-import mongoose from 'mongoose';
-import { Schema } from './index.js';
-const { Schema, Types } = mongoose;
+import { Schema, Types, model } from 'mongoose';
 
 const GroupMemberItemSchema = new Schema(
   {
-    groupId: { type: Types.ObjectId, ref: 'Group' },
-    userId: { type: Types.ObjectId, ref: 'User' },
-    productVariantId: { type: Types.ObjectId, ref: 'ProductVariant' },
-    quantity: Number,
-    priceSnapshot: Number,
-    labelSnapshot: String,
-    addedAt: Date,
+    groupId: { type: Types.ObjectId, ref: 'Group', required: true },
+    userId: { type: Types.ObjectId, ref: 'User', required: true },
+    productVariantId: {
+      type: Types.ObjectId,
+      ref: 'ProductVariant',
+      required: true,
+    },
+    quantity: { type: Number, default: 1 },
+    priceSnapshot: { type: Number, required: true },
+    labelSnapshot: { type: String, required: true },
+    addedAt: { type: Date, required: true },
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
 
-const GroupMemberItemModel = mongoose.model(
-  'GroupMemberItem',
-  GroupMemberItemSchema
-);
-
+const GroupMemberItemModel = model('GroupMemberItem', GroupMemberItemSchema);
 export default GroupMemberItemModel;

@@ -1,19 +1,25 @@
-import mongoose from 'mongoose';
-import { Schema } from './index.js';
-const { Schema, Types } = mongoose;
+import { Schema, Types, model } from 'mongoose';
+import { GROUP_STATUS, ORDER_MODE } from '../constant';
 
 const GroupSchema = new Schema(
   {
-    name: String,
-    createdBy: { type: Types.ObjectId, ref: 'User' },
-    scheduledAt: Date,
+    name: { type: String, required: true },
+    createdBy: { type: Types.ObjectId, ref: 'User', required: true },
+    scheduledAt: { type: Date, required: true },
     qrToken: { type: String, unique: true },
-    status: { type: String, enum: GROUP_STATUS, default: 'UPCOMING' },
-    mode: { type: String, enum: ORDER_MODE, default: 'DINE_IN' },
+    status: {
+      type: String,
+      enum: Object.values(GROUP_STATUS),
+      default: GROUP_STATUS.UPCOMING,
+    },
+    mode: {
+      type: String,
+      enum: Object.values(ORDER_MODE),
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-const GroupModel = mongoose.model('Group', GroupSchema);
-
+const GroupModel = model('Group', GroupSchema);
 export default GroupModel;

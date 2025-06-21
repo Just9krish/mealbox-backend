@@ -1,24 +1,24 @@
-import mongoose from 'mongoose';
-const { Schema } = mongoose;
-
-const GENDER = ['MALE', 'FEMALE', 'OTHER'];
-const ACCOUNT_STATUS = ['ACTIVE', 'INACTIVE', 'SUSPENDED', 'DELETED'];
+import { Schema, model } from 'mongoose';
+import { ACCOUNT_STATUS, GENDER } from '../constant';
 
 const UserSchema = new Schema(
   {
     email: { type: String, unique: true, required: true },
-    password: String,
-    name: String,
-    phone: String,
-    gender: { type: String, enum: GENDER },
-    profilePicture: String,
-    first_login: { type: Boolean, default: true },
+    password: { type: String, required: true },
+    name: { type: String, required: true },
+    phone: { type: String, required: true },
+    gender: { type: String, enum: Object.values(GENDER), required: true },
+    profilePicture: { type: String, required: true },
+    firstLogin: { type: Boolean, default: true },
     isProfileComplete: { type: Boolean, default: false },
-    accountStatus: { type: String, enum: ACCOUNT_STATUS, default: 'ACTIVE' },
+    accountStatus: {
+      type: String,
+      enum: Object.values(ACCOUNT_STATUS),
+      default: ACCOUNT_STATUS.ACTIVE,
+    },
   },
   { timestamps: true }
 );
 
-const UserModel = mongoose.model('User', UserSchema);
-
+const UserModel = model('User', UserSchema);
 export default UserModel;

@@ -1,17 +1,14 @@
-import mongoose from 'mongoose';
-import { Schema } from './index.js';
-const { Schema, Types } = mongoose;
+import { Schema, Types, model } from 'mongoose';
 
 const GroupMemberSchema = new Schema(
   {
-    groupId: { type: Types.ObjectId, ref: 'Group' },
-    userId: { type: Types.ObjectId, ref: 'User' },
-    joinedAt: Date,
-    leftAt: Date,
+    groupId: { type: Types.ObjectId, ref: 'Group', required: true },
+    userId: { type: Types.ObjectId, ref: 'User', required: true },
+    joinedAt: { type: Date, required: true },
+    leftAt: { type: Date },
   },
   { timestamps: true }
 );
 
-const GroupMemberModel = mongoose.model('GroupMember', GroupMemberSchema);
-
+const GroupMemberModel = model('GroupMember', GroupMemberSchema);
 export default GroupMemberModel;

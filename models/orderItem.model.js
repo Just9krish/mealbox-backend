@@ -1,18 +1,21 @@
-import mongoose from 'mongoose';
-import { Schema } from './index.js';
+import { Schema, Types, model } from 'mongoose';
 
 const OrderItemSchema = new Schema(
   {
-    orderId: { type: Types.ObjectId, ref: 'Order' },
-    productVariantId: { type: Types.ObjectId, ref: 'ProductVariant' },
-    addedByUserId: { type: Types.ObjectId, ref: 'User' },
-    quantity: Number,
-    priceSnapshot: Number,
-    labelSnapshot: String,
+    orderId: { type: Types.ObjectId, ref: 'Order', required: true },
+    productVariantId: {
+      type: Types.ObjectId,
+      ref: 'ProductVariant',
+      required: true,
+    },
+    addedByUserId: { type: Types.ObjectId, ref: 'User', required: true },
+    quantity: { type: Number, required: true },
+    priceSnapshot: { type: Number, required: true },
+    labelSnapshot: { type: String, required: true },
   },
   { timestamps: true }
 );
 
-const OrderItemModel = mongoose.model('OrderItem', OrderItemSchema);
+const OrderItemModel = model('OrderItem', OrderItemSchema);
 
 export default OrderItemModel;

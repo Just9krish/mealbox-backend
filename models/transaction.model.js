@@ -1,18 +1,30 @@
-const mongoose = require('mongoose');
-const { Schema, Types } = mongoose;
+import { Schema, Types, model } from 'mongoose';
+import { PAYMENT_METHOD, PAYMENT_STATUS } from '../constant';
 
 const TransactionSchema = new Schema(
   {
-    order_id: { type: Types.ObjectId, ref: 'Order', unique: true },
-    method: { type: String, enum: PAYMENT_METHOD },
-    status: { type: String, enum: PAYMENT_STATUS, default: 'UNPAID' },
-    amount: Number,
-    transaction_ref: { type: String, unique: true },
-    paid_at: Date,
+    orderId: {
+      type: Types.ObjectId,
+      ref: 'Order',
+      unique: true,
+      required: true,
+    },
+    method: {
+      type: String,
+      enum: Object.values(PAYMENT_METHOD),
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: Object.values(PAYMENT_STATUS),
+      default: PAYMENT_STATUS.UNPAID,
+    },
+    amount: { type: Number, required: true },
+    transactionRef: { type: String, unique: true, required: true },
+    paidAt: Date,
   },
   { timestamps: true }
 );
 
-const TransactionModel = mongoose.model('Transaction', TransactionSchema);
-
+const TransactionModel = model('Transaction', TransactionSchema);
 module.exports = TransactionModel;

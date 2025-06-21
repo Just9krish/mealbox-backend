@@ -1,23 +1,33 @@
-import mongoose from 'mongoose';
-import { Schema } from './index.js';
-const { Schema, Types } = mongoose;
+import { Schema, Types, model } from 'mongoose';
+import { ORDER_MODE, ORDER_STATUS, PAYMENT_STATUS } from '../constant';
 
 const OrderSchema = new Schema(
   {
-    user_id: { type: Types.ObjectId, ref: 'User' },
-    group_id: { type: Types.ObjectId, ref: 'Group' },
-    mode: { type: String, enum: ORDER_MODE },
-    status: { type: String, enum: ORDER_STATUS, default: 'CREATED' },
-    payment_status: { type: String, enum: PAYMENT_STATUS, default: 'UNPAID' },
-    transaction_id: { type: Types.ObjectId, ref: 'Transaction' },
-    scheduled_at: Date,
-    total_amount: Number,
+    userId: { type: Types.ObjectId, ref: 'User', required: true },
+    groupId: { type: Types.ObjectId, ref: 'Group', required: true },
+    mode: { type: String, enum: Object.values(ORDER_MODE), required: true },
+    status: {
+      type: String,
+      enum: Object.values(ORDER_STATUS),
+      default: ORDER_STATUS.CREATED,
+    },
+    paymentStatus: {
+      type: String,
+      enum: Object.values(PAYMENT_STATUS),
+      default: PAYMENT_STATUS.PENDING,
+    },
+    transactionId: {
+      type: Types.ObjectId,
+      ref: 'Transaction',
+      required: true,
+    },
+    scheduledAt: { type: Date, required: true },
+    totalAmount: { type: Number, required: true },
     invoice: { type: String, unique: true },
-    qr_token: { type: String, unique: true },
+    qrToken: { type: String, unique: true },
   },
   { timestamps: true }
 );
 
-const OrderModel = mongoose.model('Order', OrderSchema);
-
+const OrderModel = model('Order', OrderSchema);
 export default OrderModel;

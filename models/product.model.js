@@ -1,20 +1,18 @@
-import mongoose from 'mongoose';
-import { Schema } from './index.js';
-const { Schema, Types } = mongoose;
+import { Schema, Types, model } from 'mongoose';
+import { FOOD_TYPE } from '../constant';
 
 const ProductSchema = new Schema(
   {
-    name: String,
-    description: String,
-    image_url: String,
-    vendorId: { type: Types.ObjectId, ref: 'Vendor' },
-    categoryId: { type: Types.ObjectId, ref: 'Category' },
-    foodType: { type: String, enum: FOOD_TYPE },
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    image_url: { type: String, required: true },
+    vendorId: { type: Types.ObjectId, ref: 'Vendor', required: true },
+    categoryId: { type: Types.ObjectId, ref: 'Category', required: true },
+    foodType: { type: String, enum: Object.values(FOOD_TYPE), required: true },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
 
-const ProductModel = mongoose.model('Product', ProductSchema);
-
+const ProductModel = model('Product', ProductSchema);
 export default ProductModel;

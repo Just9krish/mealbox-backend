@@ -1,21 +1,22 @@
-import mongoose from 'mongoose';
-import { Schema } from './index.js';
-const { Schema, Types } = mongoose;
+import { Schema, Types, model } from 'mongoose';
 
 const CartItemSchema = new Schema(
   {
-    cartId: { type: Types.ObjectId, ref: 'Cart' },
-    productVariantId: { type: Types.ObjectId, ref: 'ProductVariant' },
-    quantity: Number,
-    priceSnapshot: Number,
-    labelSnapshot: String,
-    addedAt: Date,
+    cartId: { type: Types.ObjectId, ref: 'Cart', required: true },
+    productVariantId: {
+      type: Types.ObjectId,
+      ref: 'ProductVariant',
+      required: true,
+    },
+    quantity: { type: Number, required: true },
+    priceSnapshot: { type: Number, required: true },
+    labelSnapshot: { type: String, required: true },
+    addedAt: { type: Date, required: true },
   },
   {
     timestamps: true,
   }
 );
 
-const CartItemModel = mongoose.model('CartItem', CartItemSchema);
-
+const CartItemModel = model('CartItem', CartItemSchema);
 export default CartItemModel;
