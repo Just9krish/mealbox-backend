@@ -48,3 +48,14 @@ export const PAYMENT_METHOD = {
   NETBANKING: 'NETBANKING',
   CASH: 'CASH',
 };
+
+export const SUCCESS_CODE = 200;
+export const NOT_FOUND_CODE = 404;
+export const FORBIDDEN_CODE = 403;
+
+export const LOWERCASE_ALPHABETS_REGEX = /[a-z]/;
+export const UPPERCASE_ALPHABETS_REGEX = /[A-Z]/;
+export const SPECIAL_CHARACTERS_REGEX =
+  /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+export const NUMBERS_REGEX = /[0-9]/;
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

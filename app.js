@@ -2,8 +2,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import logger from 'morgan';
-import ErrorMiddleware from './middleware/error.js';
-import ErrorHandler from './utils/errorHandler.js';
+import { errorMiddleware } from './middleware';
+import { ErrorHandler } from './utils';
 
 const app = express();
 
@@ -29,6 +29,6 @@ app.use((req, res, next) => {
 });
 
 // If error
-app.use(ErrorMiddleware);
+app.use(errorMiddleware);
 
 export default app;
