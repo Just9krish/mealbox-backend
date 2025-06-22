@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
 // default check route
 app.get('/', (_, res) => {
-  res.send('API Running');
+  res.send(`${APP_NAME} is running`);
 });
 
 // Import routes
