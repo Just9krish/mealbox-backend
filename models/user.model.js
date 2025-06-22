@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { ACCOUNT_STATUS, GENDER } from '../constant';
+import { ACCOUNT_STATUS, GENDER } from '../constant.js';
 
 const UserSchema = new Schema(
   {

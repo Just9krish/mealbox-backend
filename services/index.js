@@ -1,5 +1,5 @@
-import { email as EmailService } from './email';
-import { token as tokenService } from './token';
-import { hash as hashService } from './hash';
+import sendMail from './email.js';
+import hashService from './hash.js';
+import tokenService from './token.js';
 
-export { EmailService, tokenService, hashService };
+export { sendMail, hashService, tokenService };

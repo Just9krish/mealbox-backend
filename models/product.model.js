@@ -1,5 +1,5 @@
 import { Schema, Types, model } from 'mongoose';
-import { FOOD_TYPE } from '../constant';
+import { FOOD_TYPE } from '../constant.js';
 
 const ProductSchema = new Schema(
   {

@@ -1,5 +1,5 @@
 import { Schema, Types, model } from 'mongoose';
-import { GROUP_STATUS, ORDER_MODE } from '../constant';
+import { GROUP_STATUS, ORDER_MODE } from '../constant.js';
 
 const GroupSchema = new Schema(
   {

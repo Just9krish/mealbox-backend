@@ -1,5 +1,5 @@
-import sendResponse from './sendResponse';
-import { errorHandler as ErrorHandler } from './errorHandler';
-import dataValidation from './dataValidation';
+import sendResponse from './sendResponse.js';
+import ErrorHandler from './errorHandler.js';
+import dataValidation from './dataValidation.js';
 
-export { sendResponse, catchAsyncError, dataValidation, ErrorHandler };
+export { sendResponse, ErrorHandler, dataValidation };

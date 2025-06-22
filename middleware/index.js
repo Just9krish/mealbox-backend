@@ -1,4 +1,5 @@
-import { catchAsyncError as catchAsyncErrorMiddleware } from './catchAsyncError';
-import { error as errorMiddleware } from './error';
+import catchAsyncErrorMiddleware from './catchAsyncError.js';
+import authMiddleware from './auth.js';
+import errorHandlerMiddleware from './error.js';
 
-export { catchAsyncErrorMiddleware, errorMiddleware };
+export { catchAsyncErrorMiddleware, authMiddleware, errorHandlerMiddleware };

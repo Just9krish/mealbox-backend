@@ -1,5 +1,5 @@
 import { Schema, Types, model } from 'mongoose';
-import { PAYMENT_METHOD, PAYMENT_STATUS } from '../constant';
+import { PAYMENT_METHOD, PAYMENT_STATUS } from '../constant.js';
 
 const TransactionSchema = new Schema(
   {

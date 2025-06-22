@@ -1,5 +1,5 @@
 import { Schema, Types, model } from 'mongoose';
-import { ORDER_MODE, ORDER_STATUS, PAYMENT_STATUS } from '../constant';
+import { ORDER_MODE, ORDER_STATUS, PAYMENT_STATUS } from '../constant.js';
 
 const OrderSchema = new Schema(
   {

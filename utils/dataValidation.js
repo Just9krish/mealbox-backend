@@ -3,10 +3,9 @@ import {
   NOT_FOUND_CODE,
   LOWERCASE_ALPHABETS_REGEX,
   UPPERCASE_ALPHABETS_REGEX,
-  SPECIAL_CHARACTERS,
   SPECIAL_CHARACTERS_REGEX,
   NUMBERS_REGEX,
-} from '../constants';
+} from '../constant.js';
 
 const checkStringDataAndLength = ({
   requiredLength,
