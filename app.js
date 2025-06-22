@@ -5,6 +5,7 @@ import logger from 'morgan';
 import { errorHandlerMiddleware } from './middleware/index.js';
 import registerRoutes from './routes/index.js';
 import { ErrorHandler } from './utils/index.js';
+import { APP_NAME } from './constant.js';
 
 const app = express();
 
