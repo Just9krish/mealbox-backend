@@ -1,4 +1,5 @@
 import app from './app.js';
+import { PORT } from './constant.js';
 import connectDatabase from './db/index.js';
 
 // handle uncaught exception
@@ -17,8 +18,8 @@ process.on('uncaughtException', (err) => {
 connectDatabase();
 
 // connect server
-const server = app.listen(process.env.PORT, () => {
-  console.log(`server is running on port ${process.env.PORT}`);
+const server = app.listen(PORT, () => {
+  console.log(`server is running on port ${PORT}`);
 });
 
 // unhandle promise rejection

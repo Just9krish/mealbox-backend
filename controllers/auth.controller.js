@@ -1,6 +1,8 @@
 import {
+  ACCESS_TOKEN_EXPIRES_IN,
   ACCESS_TOKEN_SECRET,
   ACCOUNT_STATUS,
+  REFRESH_TOKEN_EXPIRES_IN,
   REFRESH_TOKEN_SECRET,
 } from '../constant.js';
 import { catchAsyncErrorMiddleware } from '../middleware/index.js';
@@ -50,12 +52,18 @@ const loginUser = catchAsyncErrorMiddleware(async (req, res, next) => {
 
   const accessToken = tokenService.createAccessToken(
     { _id: user._id, email: user.email },
-    ACCESS_TOKEN_SECRET
+    ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: ACCESS_TOKEN_EXPIRES_IN,
+    }
   );
 
   const refreshToken = tokenService.createRefreshToken(
     { _id: user._id, email: user.email },
-    REFRESH_TOKEN_SECRET
+    REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: REFRESH_TOKEN_EXPIRES_IN,
+    }
   );
 
   sendResponse({

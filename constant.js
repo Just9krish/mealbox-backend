@@ -7,19 +7,16 @@ export const {
   PAGINATION_LIMIT = 30,
   APP_NAME = 'APP_NAME',
   NODE_ENV = `${APP_NAME}-development`,
-  MONGOOSE_SECRET_KEY,
-  TOKEN_EXPIRES_IN,
+  ACCESS_TOKEN_EXPIRES_IN,
+  REFRESH_TOKEN_EXPIRES_IN,
+  PORT = 8000,
 } = process.env;
 
 const db = process.env.MONGO_DB || '{{app_name}}';
 
 export const mongoConnectionString = `mongodb+srv://${ATLAS_USER}:${ATLAS_PASSWORD}@${ATLAS_CLUSTER}/${db}?retryWrites=true&w=majority`;
-
 export const mongoConnectionStringWithoutDB = `mongodb+srv://${ATLAS_USER}:${ATLAS_PASSWORD}@${ATLAS_CLUSTER}`;
-
 export const mongoConnectionStringEncryption = `mongodb+srv://${ATLAS_USER}:${ATLAS_PASSWORD}@${ATLAS_CLUSTER}/encryption-${db}?retryWrites=true`;
-
-export const expiresIn = TOKEN_EXPIRES_IN || '1d';
 
 export const GENDER = {
   MALE: 'Male',

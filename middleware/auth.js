@@ -1,6 +1,10 @@
 import * as Utils from '../utils/index.js';
 import { tokenService } from '../services/index.js';
-import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../constant.js';
+import {
+  ACCESS_TOKEN_EXPIRES_IN,
+  ACCESS_TOKEN_SECRET,
+  REFRESH_TOKEN_SECRET,
+} from '../constant.js';
 
 /**
  * Verifies the Bearer access-token.
@@ -27,7 +31,10 @@ export default async function authMiddleware(req, res, next) {
 
     /* 3. ---------- Verify access token ---------- */
     try {
-      const decoded = tokenService.decodeToken(accessToken, accessTokenSecret);
+      const decoded = tokenService.decodeToken(
+        accessToken,
+        ACCESS_TOKEN_SECRET
+      );
       req.user = decoded; // { _id, email, ... }
       return next();
     } catch (err) {
@@ -48,7 +55,10 @@ export default async function authMiddleware(req, res, next) {
 
       const newAccessToken = tokenService.createAccessToken(
         { _id: decodedRefresh._id, email: decodedRefresh.email },
-        ACCESS_TOKEN_SECRET
+        ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: ACCESS_TOKEN_EXPIRES_IN,
+        }
       );
 
       res.setHeader('x-access-token', newAccessToken);
