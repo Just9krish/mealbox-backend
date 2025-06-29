@@ -416,6 +416,66 @@ const getCategoryStats = catchAsyncErrorMiddleware(async (req, res) => {
   });
 });
 
+// Utility to build a category tree from a flat list
+function buildCategoryTree(categories) {
+  const idMap = {};
+  const tree = [];
+  categories.forEach((cat) => {
+    idMap[cat._id] = { ...cat, subcategories: [] };
+  });
+  categories.forEach((cat) => {
+    if (cat.parentCategory) {
+      idMap[cat.parentCategory]?.subcategories.push(idMap[cat._id]);
+    } else {
+      tree.push(idMap[cat._id]);
+    }
+  });
+  return tree;
+}
+
+// Get all categories as a tree grouped by vendor
+const getAllCategoriesTree = catchAsyncErrorMiddleware(async (req, res) => {
+  const categories = await CategoryModel.find().lean();
+  const vendors = await VendorModel.find().lean();
+  // Group categories by vendor
+  const vendorMap = {};
+  vendors.forEach((v) => {
+    vendorMap[v._id.toString()] = { ...v, categories: [] };
+  });
+  categories.forEach((cat) => {
+    if (cat.vendorId && vendorMap[cat.vendorId.toString()]) {
+      vendorMap[cat.vendorId.toString()].categories.push(cat);
+    }
+  });
+  // Build tree for each vendor
+  const result = Object.values(vendorMap).map((vendor) => ({
+    ...vendor,
+    categories: buildCategoryTree(vendor.categories),
+  }));
+  sendResponse({
+    res,
+    status: true,
+    code: 200,
+    message: 'Category tree by vendor',
+    data: result,
+  });
+});
+
+// Get categories as a tree for a specific vendor
+const getCategoriesByVendorTree = catchAsyncErrorMiddleware(
+  async (req, res) => {
+    const { vendorId } = req.params;
+    const categories = await CategoryModel.find({ vendorId }).lean();
+    sendResponse({
+      res,
+      status: true,
+      code: 200,
+      message: 'Categories for vendor',
+      data: buildCategoryTree(categories),
+    });
+  }
+);
+
 // Export all functions as default object
 export default {
   createCategory,
@@ -426,4 +486,6 @@ export default {
   toggleCategoryStatus,
   getCategoriesByVendor,
   getCategoryStats,
+  getAllCategoriesTree,
+  getCategoriesByVendorTree,
 };

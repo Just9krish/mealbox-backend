@@ -32,4 +32,13 @@ export default function registerCategoryRoutes(app) {
     `${prefix}/:id/toggle-status`,
     categoryController.toggleCategoryStatus
   );
+
+  // Get all categories as a tree grouped by vendor
+  app.get(`${prefix}/tree`, categoryController.getAllCategoriesTree);
+
+  // Get categories as a tree for a specific vendor
+  app.get(
+    `${prefix}/vendor/:vendorId/tree`,
+    categoryController.getCategoriesByVendorTree
+  );
 }
