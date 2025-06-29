@@ -13,7 +13,7 @@ import { UserModel } from '../models/index.js';
 const loginUser = catchAsyncErrorMiddleware(async (req, res, next) => {
   const { email, password } = req.body;
 
-  if (!email || password) {
+  if (!email || !password) {
     return next(new ErrorHandler('Invalid credentials', 400));
   }
 
