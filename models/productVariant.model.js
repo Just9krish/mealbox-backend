@@ -9,6 +9,7 @@ const ProductVariantSchema = new Schema(
     unitType: { type: String, required: true },
     value: { type: Number, required: true },
     stock: { type: Number, required: true },
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

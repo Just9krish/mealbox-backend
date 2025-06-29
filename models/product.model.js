@@ -4,6 +4,7 @@ import { FOOD_TYPE } from '../constant.js';
 const ProductSchema = new Schema(
   {
     name: { type: String, required: true },
+    slug: { type: String, unique: true, required: true, index: true },
     description: { type: String, required: true },
     image_url: { type: String, required: true },
     vendorId: { type: Types.ObjectId, ref: 'Vendor', required: true },
