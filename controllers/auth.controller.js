@@ -113,7 +113,7 @@ const registerUser = catchAsyncErrorMiddleware(async (req, res, next) => {
     return next(new ErrorHandler('User already exists', 400));
   }
 
-  const hashedPassword = await Service.hashService.hashPassword(password);
+  const hashedPassword = await hashService.hashPassword(password);
 
   const newUser = await Model.UserModel.create({
     email,

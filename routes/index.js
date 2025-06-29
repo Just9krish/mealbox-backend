@@ -1,9 +1,9 @@
 import registerAuthRoutes from './auth.routes.js';
-// import registerOrderRoutes from './order.routes.js';
-// import registerProductRoutes from './product.routes.js';
+import registerCategoryRoutes from './category.routes.js';
+import registerVendorRoutes from './vendor.routes.js';
 
 export default function registerRoutes(app) {
   registerAuthRoutes(app);
-  // registerOrderRoutes(app);
-  // registerProductRoutes(app);
+  registerCategoryRoutes(app);
+  registerVendorRoutes(app);
 }
