@@ -17,7 +17,7 @@ const loginUser = catchAsyncErrorMiddleware(async (req, res, next) => {
     return next(new ErrorHandler('Invalid credentials', 400));
   }
 
-  const [user] = await Model.UserModel.aggregate([
+  const [user] = await UserModel.aggregate([
     { $match: { email } },
     {
       $project: {
@@ -115,7 +115,7 @@ const registerUser = catchAsyncErrorMiddleware(async (req, res, next) => {
 
   const hashedPassword = await hashService.hashPassword(password);
 
-  const newUser = await Model.UserModel.create({
+  const newUser = await UserModel.create({
     email,
     password: hashedPassword,
     name,
