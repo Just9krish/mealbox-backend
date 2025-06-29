@@ -1,5 +1,3 @@
-// hash.js
-
 /**
  * This module provides functions to hash passwords and verify hashed passwords.
  * It uses bcryptjs for hashing and optionally crypto for additional operations.

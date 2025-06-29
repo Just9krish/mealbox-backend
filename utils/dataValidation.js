@@ -7,6 +7,15 @@ import {
   NUMBERS_REGEX,
 } from '../constant.js';
 
+/**
+ * Checks if a given value is a string and its length is below a required limit.
+ *
+ * @param {Object} params
+ * @param {number} params.requiredLength - The maximum allowed length.
+ * @param {string} params.fieldToCheck - The string to validate.
+ * @param {string} params.variableName - The name of the variable for the message.
+ * @returns {{ code: number, message: string }} Result with status code and message.
+ */
 const checkStringDataAndLength = ({
   requiredLength,
   fieldToCheck,
@@ -25,6 +34,15 @@ const checkStringDataAndLength = ({
   return { code, message };
 };
 
+/**
+ * Validates if a value exists within a given enum.
+ *
+ * @param {Object} params
+ * @param {Object} params.enumToCheck - The enum object.
+ * @param {string|number} params.value - The value to check.
+ * @param {string} params.parameterName - The parameter name for the message.
+ * @returns {{ code: number, message: string }} Result with status code and message.
+ */
 const checkForValidEnum = ({ enumToCheck, value, parameterName }) => {
   let code = SUCCESS_CODE;
   let message = `${parameterName} is valid`;
@@ -39,6 +57,12 @@ const checkForValidEnum = ({ enumToCheck, value, parameterName }) => {
   return { code, message };
 };
 
+/**
+ * Checks if the provided value is a valid array with at least one element.
+ *
+ * @param {Object} arrayToCheck - Object with an array as its first value.
+ * @returns {{ code: number, message: string }} Result with status code and message.
+ */
 const checkForValidArray = (arrayToCheck) => {
   let code = SUCCESS_CODE;
   let message = 'valid';
@@ -56,11 +80,16 @@ const checkForValidArray = (arrayToCheck) => {
   return { code, message };
 };
 
+/**
+ * Validates a password for minimum length and required character sets.
+ *
+ * @param {string} password - The password to validate.
+ * @returns {{ code: number, message: string }} Result with status code and message.
+ */
 const passwordCharactersValidation = (password) => {
   let message = 'success';
   let code = SUCCESS_CODE;
 
-  // check for length
   if (password.length < 8) {
     code = 400;
     message = 'Password needs to be atleast of 8 characters length';
@@ -82,6 +111,12 @@ const passwordCharactersValidation = (password) => {
   return { code, message };
 };
 
+/**
+ * Validates an email address.
+ *
+ * @param {string} email - The email to validate.
+ * @returns {{ code: number, message: string }} Result with status code and message.
+ */
 const checkEmail = (email) => {
   const message = 'success';
   let code = SUCCESS_CODE;

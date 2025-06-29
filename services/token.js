@@ -1,5 +1,3 @@
-// token.js
-
 /**
  * This module provides functions to create and decode JWT tokens.
  * It uses the jsonwebtoken library to handle token operations.
