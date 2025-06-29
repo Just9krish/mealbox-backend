@@ -795,6 +795,71 @@
           }
         }
       ]
+    },
+    {
+      "name": "Group Ordering",
+      "item": [
+        {
+          "name": "Create Group",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Friday Lunch\",\n  \"scheduledAt\": \"2024-07-01T13:00:00.000Z\",\n  \"mode\": \"PAYING\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/groups",
+              "host": ["{{baseUrl}}"],
+              "path": ["groups"]
+            }
+          }
+        },
+        {
+          "name": "Join Group",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"qrToken\": \"<PASTE_QR_TOKEN_HERE>\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/groups/join",
+              "host": ["{{baseUrl}}"],
+              "path": ["groups", "join"]
+            }
+          }
+        },
+        {
+          "name": "Add/Update Group Item",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productVariantId\": \"{{productVariantId}}\",\n  \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/groups/{{groupId}}/items",
+              "host": ["{{baseUrl}}"],
+              "path": ["groups", "{{groupId}}", "items"]
+            }
+          }
+        },
+        {
+          "name": "Delete Group",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups/{{groupId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["groups", "{{groupId}}"]
+            }
+          }
+        }
+      ]
     }
   ]
 }
