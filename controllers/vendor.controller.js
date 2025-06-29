@@ -4,7 +4,7 @@ import { VendorModel } from '../models/index.js';
 import mongoose from 'mongoose';
 
 // Create a new vendor
-export const createVendor = catchAsyncErrorMiddleware(async (req, res) => {
+const createVendor = catchAsyncErrorMiddleware(async (req, res) => {
   const { name, logoUrl, description } = req.body;
 
   // Check if vendor with same name already exists
@@ -29,7 +29,7 @@ export const createVendor = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Get all vendors with pagination and search
-export const getAllVendors = catchAsyncErrorMiddleware(async (req, res) => {
+const getAllVendors = catchAsyncErrorMiddleware(async (req, res) => {
   const { page = 1, limit = 10, search = '', isActive } = req.query;
   const skip = (page - 1) * limit;
 
@@ -94,7 +94,7 @@ export const getAllVendors = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Get vendor by ID
-export const getVendorById = catchAsyncErrorMiddleware(async (req, res) => {
+const getVendorById = catchAsyncErrorMiddleware(async (req, res) => {
   const { id } = req.params;
 
   const vendor = await VendorModel.aggregate([
@@ -126,7 +126,7 @@ export const getVendorById = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Update vendor
-export const updateVendor = catchAsyncErrorMiddleware(async (req, res) => {
+const updateVendor = catchAsyncErrorMiddleware(async (req, res) => {
   const { id } = req.params;
   const { name, logoUrl, description, isActive } = req.body;
 
@@ -188,7 +188,7 @@ export const updateVendor = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Delete vendor
-export const deleteVendor = catchAsyncErrorMiddleware(async (req, res) => {
+const deleteVendor = catchAsyncErrorMiddleware(async (req, res) => {
   const { id } = req.params;
 
   const vendor = await VendorModel.findById(id);
@@ -208,30 +208,28 @@ export const deleteVendor = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Toggle vendor active status
-export const toggleVendorStatus = catchAsyncErrorMiddleware(
-  async (req, res) => {
-    const { id } = req.params;
+const toggleVendorStatus = catchAsyncErrorMiddleware(async (req, res) => {
+  const { id } = req.params;
 
-    const vendor = await VendorModel.findById(id);
-    if (!vendor) {
-      throw new ErrorHandler('Vendor not found', 404);
-    }
-
-    vendor.isActive = !vendor.isActive;
-    await vendor.save();
-
-    sendResponse({
-      res,
-      status: true,
-      code: 200,
-      message: `Vendor ${vendor.isActive ? 'activated' : 'deactivated'} successfully`,
-      data: vendor,
-    });
+  const vendor = await VendorModel.findById(id);
+  if (!vendor) {
+    throw new ErrorHandler('Vendor not found', 404);
   }
-);
+
+  vendor.isActive = !vendor.isActive;
+  await vendor.save();
+
+  sendResponse({
+    res,
+    status: true,
+    code: 200,
+    message: `Vendor ${vendor.isActive ? 'activated' : 'deactivated'} successfully`,
+    data: vendor,
+  });
+});
 
 // Get vendor statistics
-export const getVendorStats = catchAsyncErrorMiddleware(async (req, res) => {
+const getVendorStats = catchAsyncErrorMiddleware(async (req, res) => {
   const stats = await VendorModel.aggregate([
     {
       $group: {
@@ -267,3 +265,13 @@ export const getVendorStats = catchAsyncErrorMiddleware(async (req, res) => {
     },
   });
 });
+
+export default {
+  createVendor,
+  getAllVendors,
+  getVendorById,
+  updateVendor,
+  deleteVendor,
+  toggleVendorStatus,
+  getVendorStats,
+};

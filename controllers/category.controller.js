@@ -4,7 +4,7 @@ import { CategoryModel, VendorModel } from '../models/index.js';
 import mongoose from 'mongoose';
 
 // Create a new category
-export const createCategory = catchAsyncErrorMiddleware(async (req, res) => {
+const createCategory = catchAsyncErrorMiddleware(async (req, res) => {
   const { name, image_url, vendorId } = req.body;
 
   // Check if vendor exists
@@ -38,7 +38,7 @@ export const createCategory = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Get all categories with pagination, search, and vendor filtering
-export const getAllCategories = catchAsyncErrorMiddleware(async (req, res) => {
+const getAllCategories = catchAsyncErrorMiddleware(async (req, res) => {
   const { page = 1, limit = 10, search = '', vendorId, isActive } = req.query;
   const skip = (page - 1) * limit;
 
@@ -123,7 +123,7 @@ export const getAllCategories = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Get category by ID with vendor details
-export const getCategoryById = catchAsyncErrorMiddleware(async (req, res) => {
+const getCategoryById = catchAsyncErrorMiddleware(async (req, res) => {
   const { id } = req.params;
 
   const category = await CategoryModel.aggregate([
@@ -175,7 +175,7 @@ export const getCategoryById = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Update category
-export const updateCategory = catchAsyncErrorMiddleware(async (req, res) => {
+const updateCategory = catchAsyncErrorMiddleware(async (req, res) => {
   const { id } = req.params;
   const { name, image_url, vendorId, isActive } = req.body;
 
@@ -267,7 +267,7 @@ export const updateCategory = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Delete category
-export const deleteCategory = catchAsyncErrorMiddleware(async (req, res) => {
+const deleteCategory = catchAsyncErrorMiddleware(async (req, res) => {
   const { id } = req.params;
 
   const category = await CategoryModel.findById(id);
@@ -287,94 +287,90 @@ export const deleteCategory = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Toggle category active status
-export const toggleCategoryStatus = catchAsyncErrorMiddleware(
-  async (req, res) => {
-    const { id } = req.params;
+const toggleCategoryStatus = catchAsyncErrorMiddleware(async (req, res) => {
+  const { id } = req.params;
 
-    const category = await CategoryModel.findById(id);
-    if (!category) {
-      throw new ErrorHandler('Category not found', 404);
-    }
-
-    category.isActive = !category.isActive;
-    await category.save();
-
-    sendResponse({
-      res,
-      status: true,
-      code: 200,
-      message: `Category ${category.isActive ? 'activated' : 'deactivated'} successfully`,
-      data: category,
-    });
+  const category = await CategoryModel.findById(id);
+  if (!category) {
+    throw new ErrorHandler('Category not found', 404);
   }
-);
+
+  category.isActive = !category.isActive;
+  await category.save();
+
+  sendResponse({
+    res,
+    status: true,
+    code: 200,
+    message: `Category ${category.isActive ? 'activated' : 'deactivated'} successfully`,
+    data: category,
+  });
+});
 
 // Get categories by vendor ID
-export const getCategoriesByVendor = catchAsyncErrorMiddleware(
-  async (req, res) => {
-    const { vendorId } = req.params;
-    const { isActive } = req.query;
+const getCategoriesByVendor = catchAsyncErrorMiddleware(async (req, res) => {
+  const { vendorId } = req.params;
+  const { isActive } = req.query;
 
-    // Check if vendor exists
-    const vendor = await VendorModel.findById(vendorId);
-    if (!vendor) {
-      throw new ErrorHandler('Vendor not found', 404);
-    }
-
-    // Build match conditions
-    const matchConditions = { vendorId: new mongoose.Types.ObjectId(vendorId) };
-
-    if (isActive !== undefined) {
-      matchConditions.isActive = isActive === 'true';
-    }
-
-    const categories = await CategoryModel.aggregate([
-      { $match: matchConditions },
-      {
-        $lookup: {
-          from: 'vendors',
-          localField: 'vendorId',
-          foreignField: '_id',
-          as: 'vendor',
-        },
-      },
-      {
-        $unwind: {
-          path: '$vendor',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          image_url: 1,
-          vendorId: 1,
-          vendor: {
-            _id: '$vendor._id',
-            name: '$vendor.name',
-            logoUrl: '$vendor.logoUrl',
-          },
-          isActive: 1,
-          createdAt: 1,
-          updatedAt: 1,
-        },
-      },
-      { $sort: { createdAt: -1 } },
-    ]);
-
-    sendResponse({
-      res,
-      status: true,
-      code: 200,
-      message: 'Categories retrieved successfully',
-      data: categories,
-    });
+  // Check if vendor exists
+  const vendor = await VendorModel.findById(vendorId);
+  if (!vendor) {
+    throw new ErrorHandler('Vendor not found', 404);
   }
-);
+
+  // Build match conditions
+  const matchConditions = { vendorId: new mongoose.Types.ObjectId(vendorId) };
+
+  if (isActive !== undefined) {
+    matchConditions.isActive = isActive === 'true';
+  }
+
+  const categories = await CategoryModel.aggregate([
+    { $match: matchConditions },
+    {
+      $lookup: {
+        from: 'vendors',
+        localField: 'vendorId',
+        foreignField: '_id',
+        as: 'vendor',
+      },
+    },
+    {
+      $unwind: {
+        path: '$vendor',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        image_url: 1,
+        vendorId: 1,
+        vendor: {
+          _id: '$vendor._id',
+          name: '$vendor.name',
+          logoUrl: '$vendor.logoUrl',
+        },
+        isActive: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    },
+    { $sort: { createdAt: -1 } },
+  ]);
+
+  sendResponse({
+    res,
+    status: true,
+    code: 200,
+    message: 'Categories retrieved successfully',
+    data: categories,
+  });
+});
 
 // Get category statistics
-export const getCategoryStats = catchAsyncErrorMiddleware(async (req, res) => {
+const getCategoryStats = catchAsyncErrorMiddleware(async (req, res) => {
   const { vendorId } = req.query;
 
   // Build match conditions
