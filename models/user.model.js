@@ -6,9 +6,9 @@ const UserSchema = new Schema(
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     name: { type: String, required: true },
-    phone: { type: String, required: true },
-    gender: { type: String, enum: Object.values(GENDER), required: true },
-    profilePicture: { type: String, required: true },
+    phone: { type: String },
+    gender: { type: String, enum: Object.values(GENDER) },
+    profilePicture: { type: String },
     firstLogin: { type: Boolean, default: true },
     isProfileComplete: { type: Boolean, default: false },
     accountStatus: {
