@@ -6,7 +6,7 @@ import {
   REFRESH_TOKEN_SECRET,
 } from '../constant.js';
 import { catchAsyncErrorMiddleware } from '../middleware/index.js';
-import { ErrorHandler } from '../utils/index.js';
+import { ErrorHandler, sendResponse } from '../utils/index.js';
 import { hashService, tokenService } from '../services/index.js';
 import { UserModel } from '../models/index.js';
 
