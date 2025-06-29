@@ -38,7 +38,7 @@ const generateUniqueSlug = async (name, vendorId, excludeId = null) => {
 };
 
 // Create a new product with variants
-export const createProduct = catchAsyncErrorMiddleware(async (req, res) => {
+const createProduct = catchAsyncErrorMiddleware(async (req, res) => {
   const {
     name,
     description,
@@ -190,7 +190,7 @@ export const createProduct = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Get all products with advanced filtering and pagination
-export const getAllProducts = catchAsyncErrorMiddleware(async (req, res) => {
+const getAllProducts = catchAsyncErrorMiddleware(async (req, res) => {
   const {
     page = 1,
     limit = 10,
@@ -422,7 +422,7 @@ export const getAllProducts = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Get product by ID with complete details
-export const getProductById = catchAsyncErrorMiddleware(async (req, res) => {
+const getProductById = catchAsyncErrorMiddleware(async (req, res) => {
   const { id } = req.params;
 
   const product = await ProductModel.aggregate([
@@ -564,7 +564,7 @@ export const getProductById = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Get product by slug with complete details
-export const getProductBySlug = catchAsyncErrorMiddleware(async (req, res) => {
+const getProductBySlug = catchAsyncErrorMiddleware(async (req, res) => {
   const { slug } = req.params;
 
   const product = await ProductModel.aggregate([
@@ -706,7 +706,7 @@ export const getProductBySlug = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Update product
-export const updateProduct = catchAsyncErrorMiddleware(async (req, res) => {
+const updateProduct = catchAsyncErrorMiddleware(async (req, res) => {
   const { id } = req.params;
   const { name, description, image_url, categoryId, foodType, isActive } =
     req.body;
@@ -856,7 +856,7 @@ export const updateProduct = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Delete product (soft delete by setting isActive to false)
-export const deleteProduct = catchAsyncErrorMiddleware(async (req, res) => {
+const deleteProduct = catchAsyncErrorMiddleware(async (req, res) => {
   const { id } = req.params;
 
   const product = await ProductModel.findById(id);
@@ -880,179 +880,175 @@ export const deleteProduct = catchAsyncErrorMiddleware(async (req, res) => {
 });
 
 // Toggle product active status
-export const toggleProductStatus = catchAsyncErrorMiddleware(
-  async (req, res) => {
-    const { id } = req.params;
+const toggleProductStatus = catchAsyncErrorMiddleware(async (req, res) => {
+  const { id } = req.params;
 
-    const product = await ProductModel.findById(id);
-    if (!product) {
-      throw new ErrorHandler('Product not found', 404);
-    }
-
-    product.isActive = !product.isActive;
-    await product.save();
-
-    // Toggle all variants status to match product status
-    await ProductVariantModel.updateMany(
-      { productId: id },
-      { isActive: product.isActive }
-    );
-
-    sendResponse({
-      res,
-      status: true,
-      code: 200,
-      message: `Product ${product.isActive ? 'activated' : 'deactivated'} successfully`,
-      data: product,
-    });
+  const product = await ProductModel.findById(id);
+  if (!product) {
+    throw new ErrorHandler('Product not found', 404);
   }
-);
+
+  product.isActive = !product.isActive;
+  await product.save();
+
+  // Toggle all variants status to match product status
+  await ProductVariantModel.updateMany(
+    { productId: id },
+    { isActive: product.isActive }
+  );
+
+  sendResponse({
+    res,
+    status: true,
+    code: 200,
+    message: `Product ${product.isActive ? 'activated' : 'deactivated'} successfully`,
+    data: product,
+  });
+});
 
 // Get products by vendor
-export const getProductsByVendor = catchAsyncErrorMiddleware(
-  async (req, res) => {
-    const { vendorId } = req.params;
-    const { page = 1, limit = 10, categoryId, foodType, isActive } = req.query;
-    const skip = (page - 1) * limit;
+const getProductsByVendor = catchAsyncErrorMiddleware(async (req, res) => {
+  const { vendorId } = req.params;
+  const { page = 1, limit = 10, categoryId, foodType, isActive } = req.query;
+  const skip = (page - 1) * limit;
 
-    // Check if vendor exists
-    const vendor = await VendorModel.findById(vendorId);
-    if (!vendor) {
-      throw new ErrorHandler('Vendor not found', 404);
-    }
-
-    // Build match conditions
-    const matchConditions = { vendorId };
-
-    if (categoryId) {
-      matchConditions.categoryId = categoryId;
-    }
-
-    if (foodType && Object.values(FOOD_TYPE).includes(foodType)) {
-      matchConditions.foodType = foodType;
-    }
-
-    if (isActive !== undefined) {
-      matchConditions.isActive = isActive === 'true';
-    }
-
-    const products = await ProductModel.aggregate([
-      { $match: matchConditions },
-      {
-        $lookup: {
-          from: 'categories',
-          localField: 'categoryId',
-          foreignField: '_id',
-          as: 'category',
-        },
-      },
-      {
-        $lookup: {
-          from: 'productvariants',
-          localField: '_id',
-          foreignField: 'productId',
-          as: 'variants',
-        },
-      },
-      {
-        $unwind: {
-          path: '$category',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $addFields: {
-          minPrice: {
-            $min: {
-              $map: {
-                input: {
-                  $filter: {
-                    input: '$variants',
-                    as: 'variant',
-                    cond: { $eq: ['$$variant.isActive', true] },
-                  },
-                },
-                as: 'variant',
-                in: '$$variant.discountedPrice',
-              },
-            },
-          },
-          maxPrice: {
-            $max: {
-              $map: {
-                input: {
-                  $filter: {
-                    input: '$variants',
-                    as: 'variant',
-                    cond: { $eq: ['$$variant.isActive', true] },
-                  },
-                },
-                as: 'variant',
-                in: '$$variant.discountedPrice',
-              },
-            },
-          },
-          totalStock: {
-            $sum: {
-              $map: {
-                input: {
-                  $filter: {
-                    input: '$variants',
-                    as: 'variant',
-                    cond: { $eq: ['$$variant.isActive', true] },
-                  },
-                },
-                as: 'variant',
-                in: '$$variant.stock',
-              },
-            },
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          description: 1,
-          image_url: 1,
-          categoryId: 1,
-          foodType: 1,
-          isActive: 1,
-          minPrice: 1,
-          maxPrice: 1,
-          totalStock: 1,
-          category: {
-            _id: '$category._id',
-            name: '$category.name',
-          },
-          variants: {
-            $filter: {
-              input: '$variants',
-              as: 'variant',
-              cond: { $eq: ['$$variant.isActive', true] },
-            },
-          },
-          createdAt: 1,
-          updatedAt: 1,
-        },
-      },
-      { $sort: { createdAt: -1 } },
-      { $skip: parseInt(skip) },
-      { $limit: parseInt(limit) },
-    ]);
-
-    sendResponse({
-      res,
-      status: true,
-      code: 200,
-      message: 'Products retrieved successfully',
-      data: products,
-    });
+  // Check if vendor exists
+  const vendor = await VendorModel.findById(vendorId);
+  if (!vendor) {
+    throw new ErrorHandler('Vendor not found', 404);
   }
-);
+
+  // Build match conditions
+  const matchConditions = { vendorId };
+
+  if (categoryId) {
+    matchConditions.categoryId = categoryId;
+  }
+
+  if (foodType && Object.values(FOOD_TYPE).includes(foodType)) {
+    matchConditions.foodType = foodType;
+  }
+
+  if (isActive !== undefined) {
+    matchConditions.isActive = isActive === 'true';
+  }
+
+  const products = await ProductModel.aggregate([
+    { $match: matchConditions },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'categoryId',
+        foreignField: '_id',
+        as: 'category',
+      },
+    },
+    {
+      $lookup: {
+        from: 'productvariants',
+        localField: '_id',
+        foreignField: 'productId',
+        as: 'variants',
+      },
+    },
+    {
+      $unwind: {
+        path: '$category',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $addFields: {
+        minPrice: {
+          $min: {
+            $map: {
+              input: {
+                $filter: {
+                  input: '$variants',
+                  as: 'variant',
+                  cond: { $eq: ['$$variant.isActive', true] },
+                },
+              },
+              as: 'variant',
+              in: '$$variant.discountedPrice',
+            },
+          },
+        },
+        maxPrice: {
+          $max: {
+            $map: {
+              input: {
+                $filter: {
+                  input: '$variants',
+                  as: 'variant',
+                  cond: { $eq: ['$$variant.isActive', true] },
+                },
+              },
+              as: 'variant',
+              in: '$$variant.discountedPrice',
+            },
+          },
+        },
+        totalStock: {
+          $sum: {
+            $map: {
+              input: {
+                $filter: {
+                  input: '$variants',
+                  as: 'variant',
+                  cond: { $eq: ['$$variant.isActive', true] },
+                },
+              },
+              as: 'variant',
+              in: '$$variant.stock',
+            },
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        description: 1,
+        image_url: 1,
+        categoryId: 1,
+        foodType: 1,
+        isActive: 1,
+        minPrice: 1,
+        maxPrice: 1,
+        totalStock: 1,
+        category: {
+          _id: '$category._id',
+          name: '$category.name',
+        },
+        variants: {
+          $filter: {
+            input: '$variants',
+            as: 'variant',
+            cond: { $eq: ['$$variant.isActive', true] },
+          },
+        },
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    },
+    { $sort: { createdAt: -1 } },
+    { $skip: parseInt(skip) },
+    { $limit: parseInt(limit) },
+  ]);
+
+  sendResponse({
+    res,
+    status: true,
+    code: 200,
+    message: 'Products retrieved successfully',
+    data: products,
+  });
+});
 
 // Get product statistics
-export const getProductStats = catchAsyncErrorMiddleware(async (req, res) => {
+const getProductStats = catchAsyncErrorMiddleware(async (req, res) => {
   const { vendorId, categoryId } = req.query;
 
   // Build match conditions
