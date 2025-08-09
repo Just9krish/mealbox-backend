@@ -485,6 +485,30 @@
               ]
             }
           }
+        },
+        {
+          "name": "Get All Categories Tree",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/tree",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "tree"]
+            }
+          }
+        },
+        {
+          "name": "Get Categories Tree by Vendor",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/vendor/{{vendorId}}/tree",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "vendor", "{{vendorId}}", "tree"]
+            }
+          }
         }
       ]
     },
