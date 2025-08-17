@@ -7,7 +7,7 @@ import {
   CategoryModel,
 } from '../models/index.js';
 import { FOOD_TYPE } from '../constant.js';
-import mongoose from 'mongoose';
+import { ImgBBService } from '../services/index.js';
 import slugify from 'slugify';
 
 // Helper function to generate unique slug
@@ -39,15 +39,33 @@ const generateUniqueSlug = async (name, vendorId, excludeId = null) => {
 
 // Create a new product with variants
 const createProduct = catchAsyncErrorMiddleware(async (req, res) => {
-  const {
-    name,
-    description,
-    image_url,
-    vendorId,
-    categoryId,
-    foodType,
-    variants,
-  } = req.body;
+  const { name, description, vendorId, categoryId, foodType, variants } =
+    req.body;
+
+  // Handle image uploads if files are present
+  let imageUrls = [];
+  if (req.files && req.files.length > 0) {
+    try {
+      const imgbbService = new ImgBBService();
+      const uploadResult = await imgbbService.uploadMultipleImages(req.files);
+
+      if (uploadResult.success) {
+        imageUrls = uploadResult.data.map((img) => ({
+          url: img.url,
+          display_url: img.display_url,
+          thumb_url: img.thumb_url,
+          medium_url: img.medium_url,
+          delete_url: img.delete_url,
+          filename: img.filename,
+          size: img.size,
+          width: img.width,
+          height: img.height,
+        }));
+      }
+    } catch (error) {
+      throw new ErrorHandler(`Image upload failed: ${error.message}`, 500);
+    }
+  }
 
   // Validate food type
   if (!Object.values(FOOD_TYPE).includes(foodType)) {
@@ -86,7 +104,8 @@ const createProduct = catchAsyncErrorMiddleware(async (req, res) => {
     name,
     slug,
     description,
-    image_url,
+    image_url: imageUrls.length > 0 ? imageUrls[0].url : null, // Main image
+    images: imageUrls, // All images array
     vendorId,
     categoryId,
     foodType,

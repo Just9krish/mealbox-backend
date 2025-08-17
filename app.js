@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(logger('dev'));
-app.use('/', express.static('uploads'));
+// Removed static uploads middleware - using ImgBB for image hosting
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
 // default check route

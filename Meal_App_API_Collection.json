@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Meal App API Collection",
-    "description": "Complete API collection for Meal App with authentication, vendors, categories, products, and cart management",
+    "description": "Complete API collection for Meal App with authentication, vendors, categories, products, and cart management. Note: Create Product endpoint now supports image uploads via form-data (up to 5 images).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_postman_id": "meal-app-api-collection"
   },
@@ -519,15 +519,46 @@
           "name": "Create Product",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [],
             "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Chicken Biryani\",\n  \"description\": \"Delicious chicken biryani with aromatic spices\",\n  \"image_url\": \"https://example.com/biryani.jpg\",\n  \"vendorId\": \"{{vendorId}}\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"foodType\": \"NON_VEG\",\n  \"variants\": [\n    {\n      \"label\": \"Regular\",\n      \"actualPrice\": 350,\n      \"discountedPrice\": 299,\n      \"unitType\": \"plate\",\n      \"value\": 1,\n      \"stock\": 50\n    },\n    {\n      \"label\": \"Large\",\n      \"actualPrice\": 450,\n      \"discountedPrice\": 399,\n      \"unitType\": \"plate\",\n      \"value\": 1.5,\n      \"stock\": 30\n    }\n  ]\n}"
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Chicken Biryani",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Delicious chicken biryani with aromatic spices",
+                  "type": "text"
+                },
+                {
+                  "key": "vendorId",
+                  "value": "{{vendorId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "foodType",
+                  "value": "NON_VEG",
+                  "type": "text"
+                },
+                {
+                  "key": "variants",
+                  "value": "[{\"label\":\"Regular\",\"actualPrice\":350,\"discountedPrice\":299,\"unitType\":\"plate\",\"value\":1,\"stock\":50},{\"label\":\"Large\",\"actualPrice\":450,\"discountedPrice\":399,\"unitType\":\"plate\",\"value\":1.5,\"stock\":30}]",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                }
+              ]
             },
             "url": {
               "raw": "{{baseUrl}}/products",

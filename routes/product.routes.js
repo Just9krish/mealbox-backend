@@ -1,10 +1,11 @@
 import { productController } from '../controllers/index.js';
+import upload from '../middleware/upload.js';
 
 const prefix = '/products';
 
 export default function registerProductRoutes(app) {
   // Create a new product with variants
-  app.post(prefix, productController.createProduct);
+  app.post(prefix, upload.array('images', 5), productController.createProduct);
 
   // Get all products with advanced filtering and pagination
   app.get(prefix, productController.getAllProducts);
